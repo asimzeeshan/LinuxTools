@@ -153,6 +153,7 @@ check_install iftop iftop
   print_warn "Example usage: iftop -i eth0"
 check_install mc mc
 check_install landscape-common
+dpkg-reconfigure landscape-common
 
 ############################################################
 # Download lowendscript from GitHub.com
@@ -171,8 +172,6 @@ print_info "Downloaded fix_locales.sh"
 wget https://github.com/asimzeeshan/DebianTools/raw/master/configure_sysinfo.sh -O ~/configure_sysinfo.sh
 chmod 770 ~/configure_sysinfo.sh
 print_info "Downloaded configure_sysinfo.sh"
-
-dpkg-reconfigure landscape-common
 
 /root/setup.sh nagiosclient
 print_info "NagiosClient installed, now removing unneeded packages again"
