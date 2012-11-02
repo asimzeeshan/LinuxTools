@@ -6,6 +6,8 @@
 # 
 # By: Asim Zeeshan
 # http://www.asim.pk/
+# Also Available at: https://gist.github.com/3848455
+#
 
 apt-get clean all
 apt-get -q -y autoremove

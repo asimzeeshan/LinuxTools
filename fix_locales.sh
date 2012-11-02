@@ -16,6 +16,7 @@
 #
 # By: Asim Zeeshan
 # http://www.asim.pk/
+# Also Available at: https://gist.github.com/3986652
 #
 
 apt-get install -q -y multipath-tools
