@@ -110,26 +110,6 @@ function update_timezone {
         dpkg-reconfigure tzdata
 }
 
-function remove_unneeded {
-        # Some Debian have portmap installed. We don't need that.
-        check_remove portmap portmap
-
-        # Remove rsyslogd, which allocates ~30MB privvmpages on an OpenVZ system,
-        # which might make some low-end VPS inoperatable. We will do this even
-        # before running apt-get update.
-        check_remove rsyslogd rsyslog
-
-        # Other packages that seem to be pretty common in standard OpenVZ
-        # templates.
-        check_remove apache2 'apache2*'
-        check_remove samba 'samba*'
-        check_remove nscd nscd
-
-        # Need to stop sendmail as removing the package does not seem to stop it.
-                invoke-rc.d sendmail stop
-                check_remove sendmail 'sendmail*'
-}
-
 ############################################################
 # Get system updated
 ############################################################
@@ -138,7 +118,6 @@ os_summary
 
 print_info "updating repos and upgrading packages"
 update_upgrade
-remove_unneeded
 
 print_info "Updating timezone information"
 update_timezone
@@ -173,10 +152,11 @@ wget https://github.com/asimzeeshan/DebianTools/raw/master/configure_sysinfo.sh 
 chmod 770 ~/configure_sysinfo.sh
 print_info "Downloaded configure_sysinfo.sh"
 
+print_warn "Installing NagiosClient"
 /root/setup.sh nagiosclient
-print_info "NagiosClient installed, now removing unneeded packages again"
 
-remove_unneeded
+print_warn "Going for system cleanup using the asimzeeshan/lowendscript"
+/root/debian.sh system
 
 print_info "I believe thats all what was needed, Happy VPS-ing"
 print_info "(until the next time I find something to add to this script)"
