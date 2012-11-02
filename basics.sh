@@ -158,14 +158,19 @@ check_install landscape-common
 # Download lowendscript from GitHub.com
 ############################################################
 print_info "Now downloading scripts from GitHub.com"
-wget https://github.com/asimzeeshan/lowendscript/raw/master/setup-debian.sh -O debian.sh && chmod 770 debian.sh
+wget https://github.com/asimzeeshan/lowendscript/raw/master/setup-debian.sh -O ~/debian.sh && chmod 770 ~/debian.sh
 print_info "Downloaded https://github.com/asimzeeshan/lowendscript/setup-debian.sh"
 
-wget http://labs.asimz.com/setup.sh -O setup.sh && chmod 770 setup.sh
+wget http://labs.asimz.com/setup.sh -O ~/setup.sh && chmod 770 ~/setup.sh
 print_info "Downloaded http://labs.asimz.com/setup.sh"
 
-wget https://github.com/asimzeeshan/DebianTools/raw/master/fix_locales.sh -O fix_locales.sh && chmod 770 fix_locales.sh
+wget https://github.com/asimzeeshan/DebianTools/raw/master/fix_locales.sh -O ~/fix_locales.sh
+chmod 770 ~/fix_locales.sh
 print_info "Downloaded fix_locales.sh"
+
+wget https://github.com/asimzeeshan/DebianTools/raw/master/configure_sysinfo.sh -O ~/configure_sysinfo.sh
+chmod 770 ~/configure_sysinfo.sh
+print_info "Downloaded configure_sysinfo.sh"
 
 dpkg-reconfigure landscape-common
 
