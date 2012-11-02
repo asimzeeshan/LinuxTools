@@ -164,7 +164,7 @@ print_info "Downloaded https://github.com/asimzeeshan/lowendscript/setup-debian.
 wget http://labs.asimz.com/setup.sh -O setup.sh && chmod 770 setup.sh
 print_info "Downloaded http://labs.asimz.com/setup.sh"
 
-wget https://github.com/asimzeeshan/VPS/raw/master/fix_locales.sh -O fix_locales.sh && chmod 770 fix_locales.sh
+wget https://github.com/asimzeeshan/DebianTools/raw/master/fix_locales.sh -O fix_locales.sh && chmod 770 fix_locales.sh
 print_info "Downloaded fix_locales.sh"
 
 dpkg-reconfigure landscape-common
