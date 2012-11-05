@@ -54,7 +54,7 @@ function update_upgrade {
 	# we try to install any package
 	apt-get -q -y update
 	apt-get -q -y upgrade
-	
+
 	# also remove the orphaned stuf
 	apt-get -q -y autoremove
 }
