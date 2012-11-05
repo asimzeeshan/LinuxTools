@@ -143,12 +143,12 @@ check_install mc mc
 # Download scripts from GitHub.com and other resources
 ############################################################
 print_info "Downloading https://github.com/asimzeeshan/lowendscript/setup-debian.sh ..."
-wget https://github.com/asimzeeshan/lowendscript/raw/master/setup-debian.sh -O ~/debian.sh
+wget https://raw.github.com/asimzeeshan/lowendscript/master/setup-debian.sh -O ~/debian.sh
 chmod 770 ~/debian.sh
 print_info ".. DONE!"
 
 print_info "Downloading https://github.com/asimzeeshan/DebianTools/raw/master/configure_sysinfo.sh ..."
-wget https://github.com/asimzeeshan/DebianTools/raw/master/configure_sysinfo.sh -O ~/configure_sysinfo.sh
+wget https://raw.github.com/asimzeeshan/DebianTools/master/configure_sysinfo.sh -O ~/configure_sysinfo.sh
 chmod 770 ~/configure_sysinfo.sh
 print_info ".. DONE!"
 
