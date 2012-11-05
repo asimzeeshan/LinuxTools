@@ -7,12 +7,13 @@ A set of tools and scripts I use often to setup new VPS/Boxes.
 
 	wget --no-check-certificate https://raw.github.com/asimzeeshan/DebianTools/master/basics.sh
 
-## Warning
+### Warning
 
  1. As the name depicts, these are Debian-centric so no support for CentOS/Fedora at this point
  2. These may be very unstable
  3. This script is self destructive, it'll overwrite previous configs during reinstallation
  4. Its craeted to suit MY needs hence some of the stuff may not appeal to you, which is fine. You can always fork and modify it to "fix" as you please
+ 5. It now downloads [bench.sh](http://freevps.us/downloads/bench.sh) and [speedtest2.sh](http://centminmod.com/mytools/speedtest2.sh) in the /root/ directory to be used later
 
 ## Credits
 
