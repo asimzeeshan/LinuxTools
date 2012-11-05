@@ -3,18 +3,64 @@
 ############################################################
 # core functions
 ############################################################
-
 function check_sanity {
-    # Do some sanity checking.
-    if [ $(/usr/bin/id -u) != "0" ]
-    then
-        die 'Must be run by root user'
+	# Do some sanity checking.
+	if [ $(/usr/bin/id -u) != "0" ]
+	then
+		die 'Must be run by root user'
+	fi
+
+	if [ ! -f /etc/debian_version ]
+	then
+		die "Distribution is not supported"
+	fi
+}
+
+function check_install {
+	if [ -z "`which "$1" 2>/dev/null`" ]
+	then
+		executable=$1
+		shift
+		while [ -n "$1" ]
+		do
+			DEBIAN_FRONTEND=noninteractive apt-get -q -y install "$1"
+			print_info "$1 installed successfully"
+			shift
+        done
+	else
+		print_warn "$1 already installed"
     fi
 
-    if [ ! -f /etc/debian_version ]
-    then
-        die "Distribution is not supported"
-    fi
+	# workaround for some broken templates on VPS
+	apt-get -q -y install $1
+}
+
+function check_remove {
+	if [ -n "`which "$1" 2>/dev/null`" ]
+	then
+		DEBIAN_FRONTEND=noninteractive apt-get -q -y remove --purge "$1"
+		print_info "$1 removed successfully"
+	else
+		print_warn "$1 is not installed"
+	fi
+}
+
+function apt_clean_all {
+	apt-get clean all
+}
+
+function update_upgrade {
+	# Run through the apt-get update/upgrade first. This should be done before
+	# we try to install any package
+	apt-get -q -y update
+	apt-get -q -y upgrade
+	
+	# also remove the orphaned stuf
+	apt-get -q -y autoremove
+}
+
+function update_timezone {
+	dpkg-reconfigure tzdata
 }
 
 function die {
@@ -38,85 +84,45 @@ function print_warn {
 # Print OS summary (OS, ARCH, VERSION)
 ############################################################
 function os_summary {
-    # Thanks for Mikel (http://unix.stackexchange.com/users/3169/mikel) for the code sample which was later modified a bit
-    # http://unix.stackexchange.com/questions/6345/how-can-i-get-distribution-name-and-version-number-in-a-simple-shell-script
-    ARCH=$(uname -m | sed 's/x86_//;s/i[3-6]86/32/')
+	# Thanks for Mikel (http://unix.stackexchange.com/users/3169/mikel) for the code sample which was later modified a bit
+	# http://unix.stackexchange.com/questions/6345/how-can-i-get-distribution-name-and-version-number-in-a-simple-shell-script
+	ARCH=$(uname -m | sed 's/x86_//;s/i[3-6]86/32/')
 
-    if [ -f /etc/lsb-release ]; then
-        . /etc/lsb-release
-        OS=$DISTRIB_ID
-        VERSION=$DISTRIB_RELEASE
-    elif [ -f /etc/debian_version ]; then
-        # Work on Debian and Ubuntu alike
-        OS=$(lsb_release -si)
-        VERSION=$(lsb_release -sr)
-    elif [ -f /etc/redhat-release ]; then
-        # Add code for Red Hat and CentOS here
-        OS=Redhat
-        VERSION=$(uname -r)
-    else
-        # Pretty old OS? fallback to compatibility mode
-        OS=$(uname -s)
-        VERSION=$(uname -r)
-    fi
+	if [ -f /etc/lsb-release ]; then
+		. /etc/lsb-release
+		OS=$DISTRIB_ID
+		VERSION=$DISTRIB_RELEASE
+	elif [ -f /etc/debian_version ]; then
+		# Work on Debian and Ubuntu alike
+		OS=$(lsb_release -si)
+		VERSION=$(lsb_release -sr)
+	elif [ -f /etc/redhat-release ]; then
+		# Add code for Red Hat and CentOS here
+		OS=Redhat
+		VERSION=$(uname -r)
+	else
+		# Pretty old OS? fallback to compatibility mode
+		OS=$(uname -s)
+		VERSION=$(uname -r)
+	fi
 
-    OS_SUMMARY=$OS
-    OS_SUMMARY+=" "
-    OS_SUMMARY+=$VERSION
-    OS_SUMMARY+=" "
-    OS_SUMMARY+=$ARCH
-    OS_SUMMARY+="bit"
+	OS_SUMMARY=$OS
+	OS_SUMMARY+=" "
+	OS_SUMMARY+=$VERSION
+	OS_SUMMARY+=" "
+	OS_SUMMARY+=$ARCH
+	OS_SUMMARY+="bit"
 
-    print_info "$OS_SUMMARY"
-}
-
-function check_install {
-    if [ -z "`which "$1" 2>/dev/null`" ]
-    then
-        executable=$1
-        shift
-        while [ -n "$1" ]
-        do
-            DEBIAN_FRONTEND=noninteractive apt-get -q -y install "$1"
-            print_info "$1 installed successfully"
-            shift
-        done
-    else
-        print_warn "$1 already installed"
-    fi
-
-        #workaround for some broken templates on VPS
-    apt-get -q -y install $1
-}
-
-function check_remove {
-    if [ -n "`which "$1" 2>/dev/null`" ]
-    then
-        DEBIAN_FRONTEND=noninteractive apt-get -q -y remove --purge "$1"
-        print_info "$1 removed successfully"
-    else
-        print_warn "$1 is not installed"
-    fi
-}
-
-function update_upgrade {
-        # Run through the apt-get update/upgrade first. This should be done before
-        # we try to install any package
-        apt-get -q -y update
-        apt-get -q -y upgrade
-}
-
-function update_timezone {
-        dpkg-reconfigure tzdata
+	print_info "$OS_SUMMARY"
 }
 
 ############################################################
-# Get system updated
+# Lets start ...
 ############################################################
-print_info "Detecting OS ..."
 os_summary
 
-print_info "updating repos and upgrading packages"
+print_info "updating Repos and upgrading packages"
+apt_clean_all
 update_upgrade
 
 print_info "Updating timezone information"
@@ -128,29 +134,38 @@ check_install wget wget
 check_install htop htop
 check_install iotop iotop
 check_install iftop iftop
-  print_warn "Run IFCONFIG to find your net. device name"
-  print_warn "Example usage: iftop -i eth0"
+print_warn "Run IFCONFIG to find your net. device name"
+print_warn "Example usage: iftop -i eth0"
+
 check_install mc mc
-check_install landscape-common
-dpkg-reconfigure landscape-common
 
 ############################################################
-# Download lowendscript from GitHub.com
+# Download scripts from GitHub.com and other resources
 ############################################################
-print_info "Now downloading scripts from GitHub.com"
-wget https://github.com/asimzeeshan/lowendscript/raw/master/setup-debian.sh -O ~/debian.sh && chmod 770 ~/debian.sh
-print_info "Downloaded https://github.com/asimzeeshan/lowendscript/setup-debian.sh"
+print_info "Downloading https://github.com/asimzeeshan/lowendscript/setup-debian.sh ..."
+wget https://github.com/asimzeeshan/lowendscript/raw/master/setup-debian.sh -O ~/debian.sh
+chmod 770 ~/debian.sh
+print_info ".. DONE!"
 
-wget http://labs.asimz.com/setup.sh -O ~/setup.sh && chmod 770 ~/setup.sh
-print_info "Downloaded http://labs.asimz.com/setup.sh"
-
-wget https://github.com/asimzeeshan/DebianTools/raw/master/fix_locales.sh -O ~/fix_locales.sh
-chmod 770 ~/fix_locales.sh
-print_info "Downloaded fix_locales.sh"
-
+print_info "Downloading https://github.com/asimzeeshan/DebianTools/raw/master/configure_sysinfo.sh ..."
 wget https://github.com/asimzeeshan/DebianTools/raw/master/configure_sysinfo.sh -O ~/configure_sysinfo.sh
 chmod 770 ~/configure_sysinfo.sh
-print_info "Downloaded configure_sysinfo.sh"
+print_info ".. DONE!"
+
+print_info "Downloading http://labs.asimz.com/setup.sh ..."
+wget http://labs.asimz.com/setup.sh -O ~/setup.sh
+chmod 770 ~/setup.sh
+print_info ".. DONE!"
+
+print_info "Downloading http://freevps.us/downloads/bench.sh ..."
+wget http://freevps.us/downloads/bench.sh -O ~/bench.sh
+chmod 770 ~/bench.sh 
+print_info ".. DONE!"
+
+print_info "Downloading http://centminmod.com/mytools/speedtest2.sh ..."
+wget http://centminmod.com/mytools/speedtest2.sh -O ~/speedtest2.sh
+chmod 770 ~/speedtest2.sh
+print_info ".. DONE!"
 
 print_warn "Installing NagiosClient"
 /root/setup.sh nagiosclient
