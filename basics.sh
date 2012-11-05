@@ -143,28 +143,23 @@ check_install mc mc
 # Download scripts from GitHub.com and other resources
 ############################################################
 print_info "Downloading https://github.com/asimzeeshan/lowendscript/setup-debian.sh ..."
-wget https://raw.github.com/asimzeeshan/lowendscript/master/setup-debian.sh -O ~/debian.sh
+wget https://raw.github.com/asimzeeshan/lowendscript/master/setup-debian.sh 2>&1 -O ~/debian.sh
 chmod 770 ~/debian.sh
 print_info ".. DONE!"
 
 print_info "Downloading https://github.com/asimzeeshan/DebianTools/raw/master/configure_sysinfo.sh ..."
-wget https://raw.github.com/asimzeeshan/DebianTools/master/configure_sysinfo.sh -O ~/configure_sysinfo.sh
+wget https://raw.github.com/asimzeeshan/DebianTools/master/configure_sysinfo.sh 2>&1 -O ~/configure_sysinfo.sh
 chmod 770 ~/configure_sysinfo.sh
 print_info ".. DONE!"
 
 print_info "Downloading http://labs.asimz.com/setup.sh ..."
-wget http://labs.asimz.com/setup.sh -O ~/setup.sh
+wget http://labs.asimz.com/setup.sh 2>&1 -O ~/setup.sh
 chmod 770 ~/setup.sh
 print_info ".. DONE!"
 
 print_info "Downloading http://freevps.us/downloads/bench.sh ..."
-wget http://freevps.us/downloads/bench.sh -O ~/bench.sh
+wget http://freevps.us/downloads/bench.sh 2>&1 -O ~/bench.sh
 chmod 770 ~/bench.sh 
-print_info ".. DONE!"
-
-print_info "Downloading http://centminmod.com/mytools/speedtest2.sh ..."
-wget http://centminmod.com/mytools/speedtest2.sh -O ~/speedtest2.sh
-chmod 770 ~/speedtest2.sh
 print_info ".. DONE!"
 
 print_warn "Installing NagiosClient"
