@@ -162,11 +162,12 @@ wget http://freevps.us/downloads/bench.sh 2>&1 -O ~/bench.sh
 chmod 770 ~/bench.sh 
 print_info ".. DONE!"
 
+print_warn "Over-writing .bashrc from Ubuntu"
+wget https://raw.github.com/asimzeeshan/DebianTools/master/bashrc 2>&1 -O ~/.bashrc
+print_warn ".. DONE!"
+
 print_warn "Installing NagiosClient"
 /root/setup.sh nagiosclient
-
-print_warn "Going for system cleanup using the asimzeeshan/lowendscript"
-/root/debian.sh system
 
 print_info "I believe thats all what was needed, Happy VPS-ing"
 print_info "(until the next time I find something to add to this script)"
