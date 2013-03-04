@@ -138,6 +138,8 @@ print_warn "Run IFCONFIG to find your net. device name"
 print_warn "Example usage: iftop -i eth0"
 
 check_install mc mc
+check_install rsync rsync
+check_install zip zip
 
 ############################################################
 # Download scripts from GitHub.com and other resources
