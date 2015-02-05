@@ -61,8 +61,13 @@ if [ -z "$CONTACT" ] ; then
         read -p "Please enter the CONTACT Email: " CONTACT
 fi
 
+## check if contact email is set
+if [ -z "$LOCATION" ] ; then
+        print_critical "Server Location is not set"
+        read -p "Please enter where the server is physically located: " LOCATION
+fi
+
 ## set server location
-read -p "Please enter where the server is physically located: " LOCATION
 ## check distro
 if [ "$DISTRO" = "CentOS" ] ; then
         print_info "The OS is detected as CentOS"
@@ -132,13 +137,12 @@ clear
 print_critical "############################################################"
 print_critical "#             !! !! Installation Complete !! !!            #"
 print_critical "############################################################"
-print_critical "# You may add this server to your Observium installation   #"
-print_critical "#          using the Community name                        #"
-print_info     "#          $COMMUNITY"
+print_critical "# You may add this server to your Observium installation "
+print_critical "#          using the Community name $COMMUNITY "
 print_critical "############################################################"
-print_critical "# You can verify the functionality by running              #"
+print_critical "# You can verify the functionality by running "
 print_critical "# snmpwalk -v 2c -c $COMMUNITY $ipv4 "
 print_critical "############################################################"
-print_critical "#If ufw is installed & configured, do the following        #"
+print_critical "# If ufw is installed & configured, do the following "
 print_critical "# sudo ufw allow from <ObserviumIP> to any port 161 && sudo ufw allow from <ObserviumIP> to any port 199 "
 print_critical "############################################################"
