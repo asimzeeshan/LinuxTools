@@ -58,7 +58,7 @@ fi
 ## check if contact email is set
 if [ -z "$CONTACT" ] ; then
         print_critical "Contact Email is not set"
-        read -p "Please enter the CONTACT Email: " COMMUNITY
+        read -p "Please enter the CONTACT Email: " CONTACT
 fi
 
 ## set server location
